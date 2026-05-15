@@ -1,0 +1,520 @@
+{
+  "project_name": "web-master (PHP Project + Python Port)",
+  "scan_date": "2026-05-08",
+  "root_path": "/Users/smithclinton/dev/web-master",
+  "total_files": 161,
+  "total_php_files": 140,
+  "total_html_files": 16,
+  "total_js_files": 2,
+  "total_python_files": 26,
+  "total_other_files": 3,
+  "directories_analyzed": ["php/", "res/", "palmmicro-python/"],
+  "analysis_status": {
+    "php": "completed",
+    "res": "completed",
+    "python": "in_progress"
+  },
+  "entry_files": [
+    "telegram.php",
+    "weixincn.php",
+    "test.php",
+    "_submitcomment.php",
+    "_submitdelete.php",
+    "_submitoperation.php",
+    "blogcomments.php",
+    "usercomments.php"
+  ],
+  "dependency_layers": {
+    "layer0_bottom": ["url.php"],
+    "layer1_utils": ["debug.php", "email.php", "regexp.php", "externalurl.php"],
+    "layer2_database": ["sql.php", "sql/_sqlcommon.php", "class/year_month_day.php"],
+    "layer3_html": ["httplink.php", "internallink.php", "ui/htmlelement.php", "ui/echohtml.php", "ui/link.php"],
+    "layer4_stock_core": [
+      "stock/stocksymbol.php",
+      "stock/yahoostock.php",
+      "stock/stockprefetch.php",
+      "stock/stockref.php",
+      "stock/mystockref.php",
+      "stock/cnyref.php",
+      "stock/netvalueref.php",
+      "stock/fundref.php",
+      "stock/qdiiref.php",
+      "stock/fundpairref.php",
+      "stock/holdingsref.php",
+      "gb2312.php",
+      "stock.php",
+      "externallink.php",
+      "stocklink.php"
+    ],
+    "layer5_business": [
+      "account.php",
+      "switch.php",
+      "stockbot.php",
+      "stockdataarray.php",
+      "stockgroup.php",
+      "stocktrans.php",
+      "stockhis.php"
+    ],
+    "layer6_ui": [
+      "layout.php",
+      "menu.php",
+      "copyright.php",
+      "analytics.php",
+      "adsense.php",
+      "imagefile.php",
+      "ui/table.php",
+      "ui/stocktable.php",
+      "ui/stockdisp.php",
+      "ui/stocktext.php",
+      "ui/stockcomm.php"
+    ],
+    "layer7_entry": [
+      "telegram.php",
+      "weixin.php",
+      "weixincn.php",
+      "blogcomments.php",
+      "usercomments.php"
+    ]
+  },
+  "database_tables": {
+    "member": "用户会员信息",
+    "page": "页面URI记录",
+    "pagecomment": "页面评论",
+    "profile": "用户资料",
+    "stockdividend": "股票分红",
+    "stockgroup": "股票投资分组",
+    "stockgroupitem": "分组持仓项",
+    "stocksplit": "拆股合股",
+    "visitor": "访客来源/目标",
+    "telegrambot": "Telegram Bot消息",
+    "wechatbot": "微信Bot消息",
+    "stock": "股票基本信息",
+    "stockhistory": "历史价格(adjclose)",
+    "stocktransaction": "交易记录",
+    "netvaluehistory": "净值历史",
+    "calibration": "校准数据",
+    "fundest": "基金估算",
+    "fundpurchase": "基金申购",
+    "holdings": "基金持仓",
+    "position": "仓位",
+    "pair": "配对关系(AB/AH/ADR)",
+    "ema50": "50日EMA",
+    "ema200": "200日EMA",
+    "gb2312": "GB2312编码映射",
+    "primenumber": "质数表",
+    "botmsg": "Bot消息内容",
+    "botsrc": "Bot来源",
+    "botvisitor": "Bot访客"
+  },
+  "python_port_status": {
+    "framework": "Flask (原计划FastAPI，已改为Flask)",
+    "orm": "SQLAlchemy",
+    "http_client": "requests/httpx",
+    "last_updated": "2026-05-08",
+    "phases": {
+      "phase1_utils": {
+        "status": "completed",
+        "description": "基础工具层",
+        "files": ["utils/config_file.py", "utils/currency.py", "utils/date_utils.py", "utils/email_sender.py", "utils/http_client.py", "utils/logger.py", "utils/regex_patterns.py", "utils/file_cache.py"]
+      },
+      "phase2_models": {
+        "status": "completed",
+        "description": "数据库模型层（28张表）",
+        "files": ["models/stock.py", "models/market_data.py", "models/trading.py", "models/pair.py", "models/holdings.py"]
+      },
+      "phase3_stock_core": {
+        "status": "completed",
+        "description": "股票数据核心层",
+        "files": ["services/stocksymbol.py", "services/stockref.py", "services/mystockref.py", "services/yahoostock.py", "services/stockprefetch.py", "services/stock.py"]
+      },
+      "phase4_data_sources": {
+        "status": "in_progress",
+        "description": "数据源层",
+        "files": ["services/cnyref.py", "services/fundref.py", "services/qdiiref.py", "services/holdingsref.py", "services/chinamoney.py"]
+      },
+      "phase5_business": {
+        "status": "completed",
+        "description": "业务逻辑层",
+        "files": ["services/stockbot.py", "services/stockgroup.py", "services/stockhis.py", "services/stocktrans.py"]
+      },
+      "phase6_bot": {
+        "status": "completed",
+        "description": "Bot接口层",
+        "files": ["bot/telegram.py", "bot/weixin.py"]
+      },
+      "phase7_ui": {
+        "status": "in_progress",
+        "description": "UI展示层",
+        "files": ["ui/stockhtml.py", "ui/stocktext.py", "templates/base.html", "templates/index.html", "templates/stock_detail.html", "templates/about.html"]
+      },
+      "phase8_routes": {
+        "status": "completed",
+        "description": "路由/API层",
+        "files": ["routes.py", "__init__.py"]
+      }
+    }
+  },
+  "tree": {
+    "php": {
+      "type": "directory",
+      "children": {
+        "_root": {
+          "type": "directory",
+          "label": "(root files, 46)",
+          "files": [
+            "ElmaBlogcomments.php",
+            "_blogcomments.php",
+            "_editcommentform.php",
+            "_palmmicromenu.php",
+            "_submitcomment.php",
+            "_submitdelete.php",
+            "_submitoperation.php",
+            "account.php",
+            "adsense.php",
+            "analytics.php",
+            "benfordimagefile.php",
+            "blogcomments.php",
+            "bloglink.php",
+            "copyright.php",
+            "csvfile.php",
+            "dateimagefile.php",
+            "debug.php",
+            "deletestock.php",
+            "email.php",
+            "externallink.php",
+            "externalurl.php",
+            "gb2312.php",
+            "httplink.php",
+            "imagefile.php",
+            "internallink.php",
+            "iplookup.php",
+            "layout.php",
+            "linearimagefile.php",
+            "menu.php",
+            "regexp.php",
+            "sql.php",
+            "stock.php",
+            "stockbot.php",
+            "stockdataarray.php",
+            "stockgroup.php",
+            "stockhis.php",
+            "stocklink.php",
+            "stocktrans.php",
+            "switch.php",
+            "telegram.php",
+            "test.php",
+            "url.php",
+            "usercomments.php",
+            "visitorlogin.php",
+            "weixin.php",
+            "weixincn.php"
+          ]
+        },
+        "class": {
+          "type": "directory",
+          "files": ["ini_file.php", "multi_currency.php", "year_month_day.php"]
+        },
+        "sql": {
+          "type": "directory",
+          "files": [
+            "_sqlcommon.php", "sqlblog.php", "sqlbotvisitor.php", "sqldailyclose.php",
+            "sqldailystring.php", "sqldailytime.php", "sqldate.php", "sqlgb2312.php",
+            "sqlholdings.php", "sqlint.php", "sqlipaddress.php", "sqlkey.php",
+            "sqlkeyname.php", "sqlkeystring.php", "sqlkeytable.php", "sqlmember.php",
+            "sqlpair.php", "sqlstock.php", "sqlstockgroup.php", "sqlstockpair.php",
+            "sqlstocksymbol.php", "sqlstocktransaction.php", "sqltable.php", "sqlval.php",
+            "sqlvisitor.php"
+          ]
+        },
+        "stock": {
+          "type": "directory",
+          "files": [
+            "chinamoney.php", "cnyref.php", "fundpairref.php", "fundref.php",
+            "holdingsref.php", "kraneshares.php", "mysqlref.php", "mystockref.php",
+            "netvalueref.php", "qdiiref.php", "stockprefetch.php", "stockref.php",
+            "stocksymbol.php", "szse.php", "yahoostock.php"
+          ]
+        },
+        "test": {
+          "type": "directory",
+          "files": [
+            "_commonupdatestock.php", "gbkuni30.txt", "updatechinastock.php",
+            "updategbutf.php", "updatesecondlisting.php", "updateusstock.php"
+          ]
+        },
+        "tutorial": {
+          "type": "directory",
+          "files": ["cramersrule.php", "dice.php", "gaussianelimination.php", "math.php", "primenumber.php"]
+        },
+        "ui": {
+          "type": "directory",
+          "files": [
+            "_disp.php", "_dispcn.php", "_edit.php", "_editcn.php", "ahparagraph.php",
+            "calibrationhistoryparagraph.php", "commentparagraph.php", "echoelement.php",
+            "echohtml.php", "editinputform.php", "fundestparagraph.php", "fundhistoryparagraph.php",
+            "fundlistparagraph.php", "fundpurchaseparagraph.php", "fundshareparagraph.php",
+            "htmlelement.php", "imagedisp.php", "link.php", "netvaluecloseparagraph.php",
+            "netvaluehistoryparagraph.php", "plaintext.php", "portfolioparagraph.php",
+            "pricepoolparagraph.php", "referenceparagraph.php", "smaparagraph.php",
+            "stockcomm.php", "stockdisp.php", "stockgroupparagraph.php", "stockhistoryparagraph.php",
+            "stockparagraph.php", "stocktable.php", "stocktext.php", "table.php",
+            "tradingparagraph.php", "transactionparagraph.php"
+          ]
+        }
+      }
+    },
+    "res": {
+      "type": "directory",
+      "description": "Palmmicro 历史资源页面 - VoIP硬件公司时代的遗留内容，与股票分析功能完全无关",
+      "children": {
+        "_root": {
+          "type": "directory",
+          "label": "(res root files, 21)",
+          "files": [
+            "index.html",
+            "indexcn.html",
+            "res.js",
+            "format.html",
+            "formatcn.html",
+            "translation.html",
+            "translationcn.html",
+            "sip2sip.html",
+            "sip2sipcn.html",
+            "voipdiscount.html",
+            "voipdiscountcn.html",
+            "voiptalk.html",
+            "voiptalkcn.html",
+            "sipphone.html",
+            "sipphonecn.html",
+            "20030111.html",
+            "20030111cn.html",
+            "20081024.html",
+            "20081024cn.html",
+            "apiguide.php",
+            "apiguidecn.php"
+          ]
+        },
+        "apiguide": {
+          "type": "directory",
+          "description": "Palmmicro 嵌入式C软件开发API文档（PA3288/PA6488芯片方案）",
+          "files": [
+            "apiguide.js",
+            "datatype.php",
+            "datatypecn.php",
+            "list.php",
+            "listcn.php"
+          ]
+        }
+      }
+    },
+    "palmmicro-python": {
+      "type": "directory",
+      "description": "Python复刻项目 - 使用Flask+SQLAlchemy重写股票分析系统",
+      "status": "in_progress",
+      "children": {
+        "app": {
+          "type": "directory",
+          "files": ["__init__.py", "database.py", "routes.py"],
+          "children": {
+            "models": {
+              "type": "directory",
+              "status": "completed",
+              "php_source": "php/sql/",
+              "description": "数据库模型（28张表映射）",
+              "files": [
+                {"name": "__init__.py", "status": "completed"},
+                {"name": "stock.py", "status": "completed", "php_source": "sqlstock.php"},
+                {"name": "market_data.py", "status": "completed", "php_source": "sqldailyclose.php, sqldailytime.php 等17张表"},
+                {"name": "trading.py", "status": "completed", "php_source": "sqlstockgroup.php, sqlstocktransaction.php"},
+                {"name": "pair.py", "status": "completed", "php_source": "sqlstockpair.php"},
+                {"name": "holdings.py", "status": "completed", "php_source": "sqlholdings.php"}
+              ]
+            },
+            "utils": {
+              "type": "directory",
+              "status": "completed",
+              "php_source": "php/debug.php, php/email.php, php/url.php",
+              "description": "基础工具函数",
+              "files": [
+                {"name": "__init__.py", "status": "completed"},
+                {"name": "config_file.py", "status": "completed", "php_source": "class/ini_file.php"},
+                {"name": "currency.py", "status": "completed", "php_source": "class/multi_currency.php"},
+                {"name": "date_utils.py", "status": "completed", "php_source": "class/year_month_day.php"},
+                {"name": "email_sender.py", "status": "completed", "php_source": "email.php"},
+                {"name": "http_client.py", "status": "completed", "php_source": "url.php (url_get_contents)"},
+                {"name": "logger.py", "status": "completed", "php_source": "debug.php"},
+                {"name": "regex_patterns.py", "status": "completed", "php_source": "regexp.php"},
+                {"name": "file_cache.py", "status": "completed", "php_source": "_stock.php (StockSaveDebugFile/StockDebugJson)", "description": "文件缓存限流（60秒间隔）"}
+              ]
+            },
+            "services": {
+              "type": "directory",
+              "status": "in_progress",
+              "php_source": "php/stock/, php/stock.php, php/stockbot.php",
+              "description": "股票数据服务层",
+              "files": [
+                {"name": "stocksymbol.py", "status": "completed", "php_source": "stock/stocksymbol.php", "description": "股票代码解析与分类"},
+                {"name": "stockref.py", "status": "completed", "php_source": "stock/stockref.php", "description": "股票引用基类"},
+                {"name": "mystockref.py", "status": "completed", "php_source": "stock/mystockref.php", "description": "Sina实时数据获取"},
+                {"name": "yahoostock.py", "status": "completed", "php_source": "stock/yahoostock.php", "description": "Yahoo历史数据"},
+                {"name": "stockprefetch.py", "status": "completed", "php_source": "stock/stockprefetch.php", "description": "批量数据预获取"},
+                {"name": "stock.py", "status": "completed", "php_source": "stock.php", "description": "股票核心聚合层"},
+                {"name": "stockbot.py", "status": "completed", "php_source": "stockbot.php", "description": "Bot查询逻辑"},
+                {"name": "stockgroup.py", "status": "completed", "php_source": "stockgroup.php", "description": "股票组合管理"},
+                {"name": "stockhis.py", "status": "completed", "php_source": "stockhis.php", "description": "历史价格/技术分析"},
+                {"name": "stocktrans.py", "status": "completed", "php_source": "stocktrans.php", "description": "交易记录"},
+                {"name": "cnyref.py", "status": "completed", "php_source": "stock/cnyref.php + stock/chinamoney.php", "description": "人民币汇率（中国货币网官方中间价 + 数据库存储）"},
+                {"name": "fundref.py", "status": "completed", "php_source": "stock/fundref.php", "description": "基金净值（Sina Finance + netvaluehistory数据库存储）"},
+                {"name": "qdiiref.py", "status": "completed", "php_source": "stock/qdiiref.php", "description": "QDII基金估算（继承FundReference + 数据库存储 + XOP标的）"},
+                {"name": "holdingsref.py", "status": "in_progress", "php_source": "stock/holdingsref.php", "description": "ETF持仓数据"},
+                {"name": "chinamoney.py", "status": "in_progress", "php_source": "stock/chinamoney.php", "description": "中国货币网数据"}
+              ]
+            },
+            "bot": {
+              "type": "directory",
+              "status": "completed",
+              "php_source": "php/telegram.php, php/weixin.php",
+              "description": "Bot接口",
+              "files": [
+                {"name": "telegram.py", "status": "completed", "php_source": "telegram.php"},
+                {"name": "weixin.py", "status": "completed", "php_source": "weixin.php, weixincn.php"}
+              ]
+            },
+            "ui": {
+              "type": "directory",
+              "status": "in_progress",
+              "php_source": "php/ui/",
+              "description": "UI展示组件",
+              "files": [
+                {"name": "stockhtml.py", "status": "in_progress", "php_source": "ui/stocktable.php, ui/stockdisp.php"},
+                {"name": "stocktext.py", "status": "completed", "php_source": "ui/stocktext.php"}
+              ]
+            },
+            "templates": {
+              "type": "directory",
+              "status": "in_progress",
+              "description": "Jinja2模板",
+              "files": [
+                {"name": "base.html", "status": "completed"},
+                {"name": "index.html", "status": "completed"},
+                {"name": "stock_detail.html", "status": "completed"},
+                {"name": "about.html", "status": "completed"}
+              ]
+            },
+            "static": {
+              "type": "directory",
+              "status": "completed",
+              "description": "静态资源",
+              "files": [
+                {"name": "css/style.css", "status": "completed"}
+              ]
+            }
+          }
+        },
+        "scripts": {
+          "type": "directory",
+          "status": "pending",
+          "description": "数据库初始化脚本",
+          "files": [
+            {"name": "init_db.py", "status": "completed"},
+            {"name": "init_db.sql", "status": "completed"}
+          ]
+        },
+        "_root": {
+          "type": "directory",
+          "files": [
+            ".env",
+            ".env.example",
+            ".gitignore",
+            "requirements.txt",
+            "test_services.py",
+            "DATABASE_SETUP.md",
+            "TABLE_MAPPING.md"
+          ]
+        }
+      }
+    }
+  },
+  "php_to_python_mapping": {
+    "url.php": "utils/http_client.py",
+    "debug.php": "utils/logger.py",
+    "email.php": "utils/email_sender.py",
+    "regexp.php": "utils/regex_patterns.py",
+    "class/ini_file.php": "utils/config_file.py",
+    "class/multi_currency.php": "utils/currency.py",
+    "class/year_month_day.php": "utils/date_utils.py",
+    "sql/*.php": "models/*.py",
+    "stock/stocksymbol.php": "services/stocksymbol.py",
+    "stock/stockref.php": "services/stockref.py",
+    "stock/mystockref.php": "services/mystockref.py",
+    "stock/yahoostock.php": "services/yahoostock.py",
+    "stock/stockprefetch.php": "services/stockprefetch.py",
+    "stock/cnyref.php": "services/cnyref.py",
+    "stock/fundref.php": "services/fundref.py",
+    "stock/qdiiref.php": "services/qdiiref.py",
+    "stock/holdingsref.php": "services/holdingsref.py",
+    "stock/chinamoney.php": "services/chinamoney.py",
+    "stock.php": "services/stock.py",
+    "stockbot.php": "services/stockbot.py",
+    "stockgroup.php": "services/stockgroup.py",
+    "stockhis.py": "services/stockhis.py",
+    "stocktrans.php": "services/stocktrans.py",
+    "telegram.php": "bot/telegram.py",
+    "weixin.php": "bot/weixin.py",
+    "weixincn.php": "bot/weixin.py",
+    "ui/stocktext.php": "ui/stocktext.py",
+    "ui/stocktable.php": "ui/stockhtml.py",
+    "ui/stockdisp.php": "ui/stockhtml.py"
+  },
+  "pending_tasks": [
+    {
+      "id": "PT-001",
+      "module": "services/cnyref.py",
+      "description": "完善人民币汇率获取逻辑",
+      "php_source": "stock/cnyref.php",
+      "priority": "high"
+    },
+    {
+      "id": "PT-002",
+      "module": "services/fundref.py",
+      "description": "完善基金净值获取逻辑",
+      "php_source": "stock/fundref.php",
+      "priority": "high"
+    },
+    {
+      "id": "PT-003",
+      "module": "services/qdiiref.py",
+      "description": "完善QDII基金净值估算",
+      "php_source": "stock/qdiiref.php",
+      "priority": "high"
+    },
+    {
+      "id": "PT-004",
+      "module": "services/holdingsref.py",
+      "description": "完善ETF持仓数据获取",
+      "php_source": "stock/holdingsref.php",
+      "priority": "medium"
+    },
+    {
+      "id": "PT-005",
+      "module": "services/chinamoney.py",
+      "description": "完善中国货币网数据获取",
+      "php_source": "stock/chinamoney.php",
+      "priority": "medium"
+    },
+    {
+      "id": "PT-006",
+      "module": "ui/stockhtml.py",
+      "description": "完善HTML展示组件",
+      "php_source": "ui/stocktable.php, ui/stockdisp.php",
+      "priority": "medium"
+    },
+    {
+      "id": "PT-007",
+      "module": "templates/",
+      "description": "扩展更多页面模板",
+      "php_source": "ui/*.php",
+      "priority": "low"
+    }
+  ]
+}

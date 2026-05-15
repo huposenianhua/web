@@ -1,0 +1,13 @@
+{
+    "name": "palmmicro/stock",
+    "description": "Palmmicro Stock Analysis",
+    "require": {
+        "php": ">=8.0",
+        "mobiledetect/mobiledetectlib": "^3.74"
+    },
+    "autoload": {
+        "classmap": [
+            "Mobile-Detect/"
+        ]
+    }
+}

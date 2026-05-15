@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% from "_table.html" import render_table %}
+
+{% block title %}{{ data.symbol }} 数据 - Palmmicro Stock Analysis{% endblock %}
+
+{% block content %}
+<div class="stock-data-page">
+    <h2>{{ data.name or data.symbol }} 历史数据</h2>
+    <p class="symbol">{{ data.symbol }}</p>
+
+    {{ render_table(
+        title='交易数据 (dailystock)',
+        columns=[
+            {"name": "日期", "width": "110px"},
+            {"name": "开盘", "width": "90px", "align": "right"},
+            {"name": "最高", "width": "90px", "align": "right"},
+            {"name": "最低", "width": "90px", "align": "right"},
+            {"name": "收盘", "width": "90px", "align": "right"},
+            {"name": "成交量", "width": "120px", "align": "right"},
+        ],
+        rows=data.trading,
+        empty_text='暂无交易数据'
+    ) }}
+
+    <div class="summary">
+        <p>交易数据: 共 {{ data.total_trading }} 条记录</p>
+    </div>
+
+    {{ render_table(
+        title='基金净值 (netvalue)',
+        columns=[
+            {"name": "日期", "width": "110px"},
+            {"name": "净值", "width": "120px", "align": "right"},
+        ],
+        rows=data.nav,
+        empty_text='暂无净值数据'
+    ) }}
+
+    <div class="summary">
+        <p>净值数据: 共 {{ data.total_nav }} 条记录</p>
+    </div>
+
+    <a href="/stock/{{ data.symbol }}" class="back-link">← 返回 {{ data.symbol }}</a>
+</div>
+
+<style>
+.stock-data-page {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+.stock-data-page h2 {
+    margin-bottom: 5px;
+}
+.symbol {
+    color: #666;
+    margin-bottom: 20px;
+}
+.summary {
+    margin-top: 10px;
+    color: #666;
+    font-size: 0.9em;
+}
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #007bff;
+    text-decoration: none;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
+</style>
+{% endblock %}

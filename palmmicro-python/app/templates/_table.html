@@ -1,0 +1,150 @@
+{#
+  Reusable data table component.
+  Usage:
+    {% from "_table.html" import render_table %}
+    
+    {{ render_table(
+      title="校准记录",
+      columns=[
+        {"name": "日期", "width": "100px"},
+        {"name": "校准值", "width": "120px"},
+      ],
+      rows=[
+        {"cells": ["2026-05-07", "1286.8568"]},
+        ...
+      ],
+      link="/stock/162411/calibration"
+    ) }}
+#}
+
+{% macro render_table(title, columns, rows=[], link=None, empty_text="暂无数据") %}
+<div class="data-table-section">
+  {% if link %}
+  <h4 class="table-title"><a href="{{ link }}">{{ title }}</a></h4>
+  {% else %}
+  <h4 class="table-title">{{ title }}</h4>
+  {% endif %}
+  {% if rows %}
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          {% for col in columns %}
+          <th style="{% if col.width %}width:{{ col.width }};{% endif %}">{{ col.name }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr{% if row.highlight %} class="row-highlight"{% endif %}>
+          {% for cell in row.cells %}
+          <td{% if cell.color %} style="color:{{ cell.color }}"{% endif %}{% if cell.align %} class="align-{{ cell.align }}"{% endif %}>
+            {{ cell.value if cell.value is string else cell.value }}
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="table-empty">{{ empty_text }}</p>
+  {% endif %}
+</div>
+{% endmacro %}
+
+
+{% macro render_simple_table(title, columns, rows=[], link=None) %}
+<div class="data-table-section">
+  {% if link %}
+  <h4 class="table-title"><a href="{{ link }}">{{ title }}</a></h4>
+  {% else %}
+  <h4 class="table-title">{{ title }}</h4>
+  {% endif %}
+  {% if rows %}
+  <table class="data-table">
+    <thead>
+      <tr>{% for c in columns %}<th>{{ c }}</th>{% endfor %}</tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>{% for v in r %}<td>{{ v }}</td>{% endfor %}</tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="table-empty">暂无数据</p>
+  {% endif %}
+</div>
+{% endmacro %}
+
+
+<style>
+.data-table-section {
+  margin: 20px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+  padding: 12px 15px;
+}
+.table-title {
+  font-size: 1em;
+  color: #333;
+  margin: 0 0 10px 0;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #ddd;
+}
+.table-title a {
+  color: #007bff;
+  text-decoration: none;
+}
+.table-title a:hover {
+  text-decoration: underline;
+}
+.table-wrapper {
+  overflow-x: auto;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  border: 1px solid #ccc;
+}
+.data-table thead {
+  background: #f0f0f0;
+}
+.data-table th {
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: normal;
+  color: #333;
+  border-bottom: 2px solid #bbb;
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 6px 12px;
+  border-bottom: 1px solid #eee;
+  white-space: nowrap;
+}
+.data-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+.data-table tbody tr:hover {
+  background: #eef5ff;
+}
+.data-table .row-highlight {
+  background: #fffde7 !important;
+}
+.data-table td.align-right {
+  text-align: right;
+}
+.data-table td.align-center {
+  text-align: center;
+}
+.table-empty {
+  color: #999;
+  font-style: italic;
+  padding: 15px 0;
+  text-align: center;
+}
+</style>

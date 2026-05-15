@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ data.name }} - 校准记录 - Palmmicro Stock Analysis{% endblock %}
+
+{% block content %}
+<div class="calibration-page">
+    <div class="page-header">
+        <h2>{{ data.name }} <span class="sub-title">校准记录</span></h2>
+        <a href="{{ url_for('main.stock_detail', symbol=data.symbol) }}" class="back-link">&larr; 返回详情页</a>
+    </div>
+
+    {% if data.records %}
+    <div class="summary">
+        <span>共 <strong>{{ data.total }}</strong> 条校准记录</span>
+        {% if data.records %}
+        <span>日期范围: {{ data.records[0].date }} ~ {{ data.records[-1].date }}</span>
+        {% endif %}
+    </div>
+
+    <table class="calibration-table">
+        <thead>
+            <tr>
+                <th>日期</th>
+                <th>校准值</th>
+                <th>时间</th>
+                <th>次数</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data.records %}
+            <tr>
+                <td class="date">{{ item.date }}</td>
+                <td class="factor">{{ "%.4f"|format(item.factor) }}</td>
+                <td class="time">{{ item.time or '-' }}</td>
+                <td class="num">{{ item.num or 1 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <p>暂无校准记录。</p>
+        <p class="note">请先访问 <a href="{{ url_for('main.stock_detail', symbol=data.symbol) }}">基金详情页</a> 触发一次估值计算，系统会自动生成校准值并保存历史记录。</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.calibration-page {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.page-header h2 {
+    margin: 0;
+    color: #333;
+}
+.sub-title {
+    font-size: 0.7em;
+    color: #666;
+    font-weight: normal;
+}
+.back-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.95em;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
+.summary {
+    background: #f8f9fa;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    color: #666;
+    font-size: 0.95em;
+}
+.summary span {
+    margin-right: 24px;
+}
+.calibration-table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    overflow: hidden;
+}
+.calibration-table thead {
+    background: #343a40;
+    color: white;
+}
+.calibration-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+}
+.calibration-table tbody tr {
+    border-bottom: 1px solid #eee;
+}
+.calibration-table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+.calibration-table tbody tr:hover {
+    background: #e9ecef;
+}
+.calibration-table td {
+    padding: 10px 16px;
+}
+.calibration-table .date {
+    font-family: monospace;
+    color: #495057;
+}
+.calibration-table .factor {
+    font-weight: bold;
+    color: #d63384;
+    text-align: right;
+}
+.calibration-table .time {
+    text-align: center;
+    color: #666;
+}
+.calibration-table .num {
+    text-align: center;
+}
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+.empty-state p {
+    margin: 8px 0;
+}
+.empty-state .note {
+    font-size: 0.9em;
+    color: #999;
+}
+.empty-state a {
+    color: #007bff;
+}
+</style>
+{% endblock %}

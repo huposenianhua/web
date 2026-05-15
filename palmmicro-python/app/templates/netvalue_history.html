@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% from "_table.html" import render_table %}
+
+{% block title %}{{ data.title or (data.symbol ~ ' 净值记录') }} - Palmmicro{% endblock %}
+
+{% block content %}
+<div class="netvalue-history">
+    <h2>{{ data.title or (data.symbol ~ ' - 净值历史') }}</h2>
+    <p class="symbol">{{ data.name or data.symbol }}</p>
+
+    {% if data.records %}
+    {{ render_table(
+        title='历史数据',
+        columns=[
+            {"name": "日期", "width": "120px"},
+            {"name": "数值", "width": "120px", "align": "right"},
+        ],
+        rows=data.rows,
+        empty_text='暂无数据'
+    ) }}
+    {% else %}
+    <div class="empty">
+        <p>暂无数据</p>
+    </div>
+    {% endif %}
+
+    <div class="summary">
+        <p>共 {{ data.total }} 条记录</p>
+    </div>
+
+    <a href="/stock/{{ data.symbol }}" class="back-link">← 返回 {{ data.symbol }}</a>
+</div>
+
+<style>
+.netvalue-history {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+.netvalue-history h2 {
+    margin-bottom: 5px;
+}
+.symbol {
+    color: #666;
+    margin-bottom: 20px;
+}
+.empty {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+.summary {
+    margin-top: 15px;
+    color: #666;
+}
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #007bff;
+    text-decoration: none;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
+</style>
+{% endblock %}

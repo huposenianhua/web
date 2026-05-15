@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}首页 - Palmmicro Stock Analysis{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <h2>股票查询</h2>
+    <form id="search-form">
+        <input type="text" id="search-input" placeholder="输入股票代码或名称，如：600519、贵州茅台、AAPL" />
+        <button type="submit">查询</button>
+    </form>
+    <div id="search-result"></div>
+</div>
+
+<div class="feature-cards">
+    <div class="card">
+        <h3>实时行情</h3>
+        <p>获取中美港三地股票实时行情数据</p>
+    </div>
+    <div class="card">
+        <h3>基金净值</h3>
+        <p>QDII基金净值估算与实时查询</p>
+    </div>
+    <div class="card">
+        <h3>配对交易</h3>
+        <p>A/B股、A/H股、ADR配对比价分析</p>
+    </div>
+</div>
+
+<script>
+document.getElementById('search-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const query = document.getElementById('search-input').value.trim();
+    if (!query) return;
+    
+    fetch(`/api/search?q=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('search-result').innerHTML = 
+                `<pre>${data.result}</pre>`;
+        })
+        .catch(error => {
+            document.getElementById('search-result').innerHTML = 
+                '<p>查询失败，请重试</p>';
+        });
+});
+</script>
+{% endblock %}
