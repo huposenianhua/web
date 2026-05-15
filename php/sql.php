@@ -13,7 +13,9 @@ require_once('internallink.php');
 require_once('_private.php');
 require_once('sql/_sqlcommon.php');
 
-define('DB_DATABASE', 'n5gl0n39mnyn183l_camman');
+if (!defined('DB_DATABASE')) {
+    define('DB_DATABASE', 'n5gl0n39mnyn183l_camman');
+}
 
 define('TABLE_MEMBER', 'member');
 define('TABLE_PAGE', 'page');
@@ -196,10 +198,12 @@ function SqlConnectDatabase()
 
 	global $g_link;
 
-	$g_link = mysqli_connect('mysql', 'n5gl0n39mnyn183l_woody', DB_PASSWORD);	// Connect to mysql server
+	$g_link = mysqli_connect('mysql', 'n5gl0n39mnyn183l_woody', DB_PASSWORD);
 	if (!$g_link)		die('Failed to connect to server');
 
+	mysqli_report(MYSQLI_REPORT_OFF);
 	mysqli_set_charset($g_link, 'utf8');
+	mysqli_query($g_link, "SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'");
 	$db = mysqli_select_db($g_link, DB_DATABASE);		// Select database
 	if (!$db) 
 	{
