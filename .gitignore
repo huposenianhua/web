@@ -1,0 +1,17 @@
+.DS_Store
+.workbuddy/
+CLAUDE.md
+
+php/_private.php
+php/_tgprivate.php
+php/_wxprivate.php
+php/Mobile-Detect/
+
+debug/
+woody/res/debug/
+
+palmmicro-docker/mysql/*.sql
+
+test.php
+test2.php
+test3.php

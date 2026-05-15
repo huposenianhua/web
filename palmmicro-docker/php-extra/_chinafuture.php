@@ -1,0 +1,113 @@
+<?php
+require_once('_fundgroup.php');
+
+//https://81.futsseapi.eastmoney.com/sse/113_ag2602_qt
+
+function _RealtimeCallback()
+{
+    global $acct;
+    
+    $realtime_ref = $acct->GetRealtimeRef();
+    $cnh_ref = $acct->GetCnhRef();
+    return 1000.0 * $realtime_ref->GetVal() * $cnh_ref->GetVal() / 31.1035;
+}
+
+class _ChinaFutureAccount extends FundGroupAccount
+{
+    var $realtime_ref = false;
+    var $cnh_ref = false;
+
+    public function Create() 
+    {
+        $strSymbol = $this->GetName();
+		$ar = array($strSymbol);
+        if ($strSymbol == 'SZ161226')
+        {
+        	$strRealtime = 'hf_SI';
+        	$ar[] = $strRealtime;
+        	$strCNH = 'fx_susdcnh';
+        	$ar[] = $strCNH;
+        	$callback = '_RealtimeCallback';
+        }
+        else
+        {
+        	$strRealtime = false;
+        	$strCNH = false;
+        	$callback = false;
+        }
+        
+        StockPrefetchArrayExtendedData($ar);
+        $this->ref = new FundPairReference($strSymbol, $callback);
+        if ($strRealtime)	$this->realtime_ref = new MyStockReference($strRealtime);
+        if ($strCNH)		$this->cnh_ref = new MyStockReference($strCNH);
+		
+        SzseGetLofShares($this->ref);
+   		$this->ref->DailyCalibration();
+   		
+   		$pair_ref = $this->ref->GetPairRef();
+   		$arRef = $pair_ref ? array($pair_ref, $this->ref) : array($this->ref);
+        $this->CreateGroup($arRef);
+    }
+
+    public function GetRealtimeRef()
+    {
+    	return $this->realtime_ref;
+    }
+
+    public function GetCnhRef()
+    {
+    	return $this->cnh_ref;
+    }
+}
+
+function EchoAll()
+{
+    global $acct;
+
+    $ref = $acct->GetRef();
+    
+	EchoFundEstParagraph($ref);
+    EchoReferenceParagraph(array_merge($acct->GetStockRefArray(), array($acct->GetRealtimeRef(), $acct->GetCnhRef())), $acct->IsAdmin());
+    EchoFundListParagraph(array($ref));
+    EchoFundPairTradingParagraph($ref);
+    EchoFundPairSmaParagraph($ref);
+    EchoFundHistoryParagraph($ref);
+   	EchoFundShareParagraph($ref);
+
+    if ($group = $acct->EchoTransaction()) 
+    {
+    	$acct->EchoMoneyParagraph($group);
+	}
+	
+    $acct->EchoLinks('chinafuture', 'GetChinaFutureLinks');
+}
+
+function GetChinaFutureLinks($sym)
+{
+	$str = GetStockCategoryLinks($sym->GetSymbol());
+	return $str.GetChinaFutureRelated($sym->GetDigitA());
+}
+
+function GetMetaDescription()
+{
+    global $acct;
+
+    $ref = $acct->GetRef();
+    
+    $strDescription = RefGetStockDisplay($ref);
+    $pair_ref = $ref->GetPairRef();
+    if ($pair_ref)
+    {
+    	$strEst = RefGetStockDisplay($pair_ref);
+    	$str = "用{$strEst}估算{$strDescription}".STOCK_DISP_NETVALUE.'，同时测算无风险套利的国内期货市场对冲比例等数据。';
+    }
+    else
+    {
+    	$str = "{$strDescription}".STOCK_DISP_NETVALUE.'，同时测算无风险套利的国内期货市场对冲比例等数据。';
+    }
+    return CheckMetaDescription($str);
+}
+
+   	$acct = new _ChinaFutureAccount();
+   	$acct->Create();
+?>

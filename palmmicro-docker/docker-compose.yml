@@ -1,0 +1,57 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: palmmicro-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: n5gl0n39mnyn183l_woody
+      MYSQL_PASSWORD: '.@=6207zmt'
+      MYSQL_DATABASE: palmmicro
+      TZ: Asia/Shanghai
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./mysql/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+      - ./mysql/gb2312_data.sql:/docker-entrypoint-initdb.d/03-gb2312.sql
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: palmmicro-php
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "8080:80"
+    volumes:
+      - ../:/var/www/html
+      - ../php:/var/www/html/woody/php
+      - ./php-extra/_blog.php:/var/www/html/woody/php/_blog.php
+      - ./php-extra/_imageaccount.php:/var/www/html/woody/php/_imageaccount.php
+      - ./php-extra/_photo.php:/var/www/html/woody/php/_photo.php
+      - ./php-extra/_woodymenu.php:/var/www/html/woody/php/_woodymenu.php
+      - ./php-extra/_woody.php:/var/www/html/woody/php/_woody.php
+      - ./php-extra/MobileDetect.php:/var/www/html/php/Mobile-Detect/src/MobileDetect.php
+      - ./php-extra/url.php:/var/www/html/woody/php/url.php
+      - ./php-extra/layout.php:/var/www/html/php/layout.php
+      - ./php-extra/sqldailyclose.php:/var/www/html/php/sql/sqldailyclose.php
+      - ./php-extra/fundpairref.php:/var/www/html/php/stock/fundpairref.php
+      - ./php-extra/imagedisp.php:/var/www/html/php/ui/imagedisp.php
+      - ./php-extra/overnightcnhcn.php:/var/www/html/woody/res/overnightcnhcn.php
+      - ./php-extra/_chinafuture.php:/var/www/html/woody/res/php/_chinafuture.php
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  mysql_data:

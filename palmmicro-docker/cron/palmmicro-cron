@@ -1,0 +1,6 @@
+SHELL=/bin/bash
+PATH=/usr/local/bin:/usr/bin:/bin
+
+20 9  * * 1-5 /usr/local/bin/fetch_morning.sh >> /var/www/html/woody/res/debug/cron_fetch.log 2>&1
+5 17 * * 1-5 /usr/local/bin/fetch_afternoon.sh >> /var/www/html/woody/res/debug/cron_fetch.log 2>&1
+0 21 * * 1-5 /usr/local/bin/fetch_evening.sh >> /var/www/html/woody/res/debug/cron_fetch.log 2>&1
