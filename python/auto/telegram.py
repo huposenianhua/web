@@ -1,13 +1,52 @@
 import requests
 import json
+import time
 from typing import Union, List, Dict, Any
 
-import time
 from _mytoken import BOT_TOKEN
 from _mytoken import ROT_TOKEN
 
+from palmmicroapi import PalmmicroAPI
+
+def _handlePalmmicroData(arData):
+	arCNY = {'CNY': 6.7793}
+	arXOP = {'XOP': 130.68}
+	arSPY = {'SPY': 619.24}
+	arES = {'hf_ES': 6213.5}
+	api = PalmmicroAPI(arData)
+	print(api.get_config())
+    
+	print(round(api.EstNetValue('SZ162411'), 3), '直接算162411官方估值')
+	f162411 = api.EstNetValue('SZ162411', arXOP)
+	fXOP = api.ReverseEst({'SZ162411':f162411})
+	print(f"直接算162411: {f162411:.3f}, 反向算XOP: {fXOP:.2f}")
+    
+	print(round(api.EstNetValue('SZ159518', arCNY), 3), '直接算159518参考估值')
+	f159518 = api.EstNetValue('SZ159518', arXOP | arCNY)
+	fXOP = api.ReverseEst({'SZ159518':f159518} | arCNY)
+	print(f"直接算159518: {f159518:.3f}, 反向算XOP: {fXOP:.2f}")
+    
+	print(round(api.EstNetValue('SZ161125'), 3), '直接算161125官方估值')
+	f161125 = api.EstNetValue('SZ161125', arSPY)
+	fSPY = api.ReverseEst({'SZ161125':f161125})
+	print(f"把SPY转换成^GSPC后二次计算161125: {f161125:.3f}, 反向算SPY: {fSPY:.2f}")
+	f161125 = api.EstNetValue('SZ161125', arES)
+	fSPY = api.ReverseEst({'SZ161125':f161125})
+	print(f"把ES转换成^GSPC后二次计算161125: {f161125:.3f}, 反向算SPY: {fSPY:.2f}")
+    
+	f159612 = api.EstNetValue('SZ159612', arSPY | arCNY)
+	fSPY = api.ReverseEst({'SZ159612':f159612} | arCNY)
+	print(f"把SPY转换成^GSPC后二次计算159612: {f159612:.3f}, 反向算SPY: {fSPY:.2f}")
+	f159612 = api.EstNetValue('SZ159612', arES | arCNY)
+	fSPY = api.ReverseEst({'SZ159612':f159612} | arCNY)
+	print(f"把ES转换成^GSPC后二次计算159612: {f159612:.3f}, 反向算SPY: {fSPY:.2f}")
+	
+	print(round(api.EstNetValue('SZ160723'), 3), '按持仓算160723官方估值')
+	print(round(api.EstNetValue('SZ164701'), 3), '按持仓算164701官方估值')
+
+
 def post_json_array_to_telegram(
-    data_array: List[Any], 
+    data_array: Dict[str, Any], 
     bot_token: str, 
     timeout: int = 30
 ) -> Union[List[Any], Dict[str, Any], None]:
@@ -110,6 +149,6 @@ def FetchPalmmicroData(strSymbols):
     if result is not None:
         # 可以进一步处理result
         if isinstance(result, dict):
-            print(result['text'])
+            _handlePalmmicroData(result['text'])
     else:
         print("函数执行失败，请检查上面的错误信息。")
