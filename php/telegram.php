@@ -5,18 +5,17 @@ require_once('stockdataarray.php');
 require_once('tutorial/iprules.php');
 
 // 电报公共模板, 返回输入信息
-define('TG_DEBUG_VER', '版本047');		
+const TG_DEBUG_VER = '版本051';
+const BOT_EOL = "\r\n";
+const MAX_BOT_MSG_LEN = 2048;
 
-define('BOT_EOL', "\r\n");
-define('MAX_BOT_MSG_LEN', 2048);
-
-define('TG_API_URL', 'https://api.telegram.org/bot'.TG_TOKEN.'/');
-define('TG_ADMIN_CHAT_ID', '992671436');		// @sz152
-define('TG_CAST_CHAT_ID', '-1001346320717');	// @palmmicrochan
+const TG_API_URL = 'https://api.telegram.org/bot'.TG_TOKEN.'/';
+const TG_ADMIN_CHAT_ID = '992671436';		// @sz152
+const TG_CAST_CHAT_ID = '-1001346320717';	// @palmmicrochan
 
 function _inBlackList($strIp)
 {
-	$ar = ['36.143.159.189', '66.90.98.35', '119.135.210.182', '203.10.99.42'];
+	$ar = ['36.143.159.189', '66.90.98.35', '203.10.99.42'];
 	foreach ($ar as $str)
 	{
 		if (isIpInSubnetAuto($strIp, $str))		return true;
@@ -43,7 +42,7 @@ class TelegramCallback
 	function DirectReply($method, $parameters) 
 	{
 		if (!is_string($method))			return false; 
-		if (!$parameters) 		    		$parameters = array();
+		if (!$parameters) 		    		$parameters = [];
 		else if (!is_array($parameters))	return false;
 
 		$parameters['method'] = $method;
@@ -56,10 +55,10 @@ class TelegramCallback
 
 	function ReplyText($text, $strMessageId, $strChatId) 
 	{
-		$this->DirectReply('sendMessage', array('chat_id' => $strChatId, 'reply_to_message_id' => $strMessageId, 'text' => $text));
+		$this->DirectReply('sendMessage', ['chat_id' => $strChatId, 'reply_to_message_id' => $strMessageId, 'text' => $text]);
 	}
 	
-	function _sendText($strText, $strChatId) 
+	private function _sendText($strText, $strChatId) 
 	{
         url_get_contents(TG_API_URL.'sendMessage?text='.urlencode($strText).'&chat_id='.$strChatId);        //valid signature , option
 	}
@@ -67,7 +66,7 @@ class TelegramCallback
 	function Debug($strDebug)
 	{
 		$this->_sendText($strDebug, TG_ADMIN_CHAT_ID);
-//		$this->_sendText($strDebug, TG_CAST_CHAT_ID);
+		// $this->_sendText($strDebug, TG_CAST_CHAT_ID);
 	}
 	
     public function OnText($strText, $strMessageId, $strChatId)
@@ -75,7 +74,7 @@ class TelegramCallback
 		$this->_sendText($strText, $strChatId);
     }
 
-	function _processMessage($message) 
+	private function _processMessage($message) 
 	{	// process incoming message
 		if (isset($message['message_id']))	$strMessageId = $message['message_id'];
 		else								return;
@@ -107,7 +106,7 @@ class TelegramCallback
 				}
 				else
 				{
-					$str = '无效token: '.$strToken;
+					$str = "无效token: $strToken";
 					$this->Debug($str);
 					DebugString(__CLASS__.__FUNCTION__.$str);
 				}
@@ -119,7 +118,7 @@ class TelegramCallback
 				switch ($strText)
 				{
 				case 'start':
-//					apiRequestJson("sendMessage", array('chat_id' => $strChatId, "text" => 'Hello', 'reply_markup' => array('keyboard' => array(array('Hello', 'Hi')), 'one_time_keyboard' => true, 'resize_keyboard' => true)));
+					// apiRequestJson("sendMessage", array('chat_id' => $strChatId, "text" => 'Hello', 'reply_markup' => array('keyboard' => array(array('Hello', 'Hi')), 'one_time_keyboard' => true, 'resize_keyboard' => true)));
 					return;
 				
 				case 'stop':	// stop now
@@ -128,7 +127,7 @@ class TelegramCallback
 			} 
 			if ($strIp != '91.108.5.6')
 			{
-				$str = '未授权IP: '.$strIp;
+				$str = "未授权IP: $strIp";
         		$this->Debug($str);
 				DebugString(__CLASS__.__FUNCTION__.$str);
 				return;
@@ -137,8 +136,8 @@ class TelegramCallback
 		}
 		else 
 		{
-//			apiRequest("sendMessage", array('chat_id' => $strChatId, "text" => 'I understand only text messages'));
-//			$this->_sendText('只能回复文本消息', $strChatId);
+			// apiRequest("sendMessage", array('chat_id' => $strChatId, "text" => 'I understand only text messages'));
+			// $this->_sendText('只能回复文本消息', $strChatId);
 		}
 	}		
 
@@ -147,7 +146,7 @@ class TelegramCallback
     	$content = file_get_contents('php://input');
     	if ($update = json_decode($content, true))
     	{
-//    		DebugPrint($update);
+			// DebugPrint($update);
     		if (isset($update['message'])) 
     		{
     			$this->_processMessage($update['message']);
@@ -173,13 +172,12 @@ class TelegramStock extends TelegramCallback
         }
         else
         {
-        	$this->Debug('未知查询：'.$strText);
+        	$this->Debug("未知查询: $strText");
         }
     }
 }
 
     $acct = new TelegramStock();
     $acct->Run();
-//    $acct->SetCallback();
+	// $acct->SetCallback();
 
-?>
