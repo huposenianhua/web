@@ -8,7 +8,7 @@ function _echoFundHistoryTableItem($csv, $strNetValue, $arHistory, $arFundEst, $
 	$strDate = $arHistory['date'];
     if ($csv)		$csv->Write($strDate, $strNetValue, $ref->GetPercentageString($fNetValue, $fClose));
 
-   	$ar = array($strDate);
+   	$ar = [$strDate];
    	$ar[] = $ref->GetPriceDisplay($fClose, $fNetValue);
    	$ar[] = $ref->GetNetValueDisplay($fNetValue);
    	$ar[] = $ref->GetPercentageDisplay($fNetValue, $fClose);
@@ -19,7 +19,7 @@ function _echoFundHistoryTableItem($csv, $strNetValue, $arHistory, $arFundEst, $
 			$fEstValue = floatval($strEstValue);
     		$ar[] = $ref->GetPriceDisplay($fEstValue, $fNetValue);
     		$strTime = GetHM($arFundEst['time']); 
-    		$ar[] = $bAdmin ? GetOnClickLink('/php/_submitdelete.php?'.'fundest'.'='.$arFundEst['id'], '确认删除'.STOCK_DISP_EST.'记录'.$strEstValue.'？', $strTime) : $strTime;
+    		$ar[] = $bAdmin ? GetOnClickLink("/php/_submitdelete.php?fundest=".$arFundEst['id'], '确认删除'.STOCK_DISP_EST.'记录'.$strEstValue.'？', $strTime) : $strTime;
     		$ar[] = $ref->GetPercentageDisplay($fNetValue, $fEstValue);
     		if ($est_ref)	$ar[] = $est_ref->GetNetValueDisplay($est_ref->GetNetValue($arFundEst['date']));
     	}
@@ -71,7 +71,7 @@ function _echoFundHistoryParagraph($ref, $est_ref, $csv, $iStart, $iNum, $bAdmin
 		$strMenuLink = StockGetMenuLink($strSymbol, $his_sql->Count($strStockId), $iStart, $iNum);
 	}
 
-	$ar = array(new TableColumnDate(), $close_col, $netvalue_col, $premium_col);
+	$ar = [new TableColumnDate(), $close_col, $netvalue_col, $premium_col];
 	$fund_est_sql = GetFundEstSql();
 	if ($fund_est_sql->Count($strStockId) > 0)
 	{
@@ -104,5 +104,3 @@ function EchoFundHistoryParagraph($ref, $csv = false, $iStart = 0, $iNum = TABLE
 		_echoFundHistoryParagraph($ref, $est_ref, $csv, $iStart, $iNum, $bAdmin);
 	}
 }
-
-?>

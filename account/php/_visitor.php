@@ -4,7 +4,7 @@ require_once('../php/iplookup.php');
 require_once('../php/ui/table.php');
 require_once('../php/sql/sqlbotvisitor.php');
 
-define('MAX_VISITOR_CONTENTS', 35);
+const MAX_VISITOR_CONTENTS = 35;
 function _getVisitorContentsDisplay($strContents)
 {
     if (strlen($strContents) > MAX_VISITOR_CONTENTS)
@@ -19,29 +19,29 @@ function _echoVisitorData($strId, $visitor_sql, $contents_sql, $iStart, $iNum, $
 {
 	global $acct;
 	
-    $arBlogId = array();
-    $arId = array();
+    $arBlogId = [];
+    $arId = [];
     $strType = $contents_sql->GetTableName();
-
     if ($result = $visitor_sql->GetDataBySrc($strId, $iStart, $iNum)) 
     {
    		$strDstIndex = $visitor_sql->GetDstKeyIndex();
    		$strSrcIndex = $visitor_sql->GetSrcKeyIndex();
         while ($record = mysqli_fetch_assoc($result)) 
         {
-			$ar = array($record['date'], GetHM($record['time']));
-
+			$ar = [$record['date'], GetHM($record['time'])];
 			$strDstId = $record[$strDstIndex];
-			if ($strType == TABLE_BOT_MSG)
+			switch ($strType)
 			{
+			case TABLE_BOT_MSG:
 				$ar[] = _getVisitorContentsDisplay($contents_sql->GetText($strDstId));
-			}
-			else
-			{
+				break;
+			
+			default:
 				$strUri = $contents_sql->GetUri($strDstId);
 				$strUriLink = ltrim($strUri, '/');
 				$strUriLink = _getVisitorContentsDisplay($strUriLink);
 				$ar[] = SelectColumnItem($strUriLink, GetInternalLink($strUri, $strUriLink), $strDstId, $arBlogId);
+				break;
 			}
             
 			$strColor = false;
@@ -62,7 +62,7 @@ function _echoVisitorData($strId, $visitor_sql, $contents_sql, $iStart, $iNum, $
 
 function _echoVisitorParagraph($strIp, $strId, $visitor_sql, $contents_sql, $iStart, $iNum, $bAdmin, $bChinese)
 {
-	$ar = array(new TableColumnDate(false, $bChinese), new TableColumnTime($bChinese), new TableColumn(($bChinese ? '内容' : 'Contents'), MAX_VISITOR_CONTENTS * 10));
+	$ar = [new TableColumnDate(false, $bChinese), new TableColumnTime($bChinese), new TableColumn(($bChinese ? '内容' : 'Contents'), MAX_VISITOR_CONTENTS * 10)];
     
 	$str = ' ';
     if ($strIp)
@@ -73,15 +73,15 @@ function _echoVisitorParagraph($strIp, $strId, $visitor_sql, $contents_sql, $iSt
     	$str .= GetIpLink($strIp, $bChinese);
         if ($bAdmin)
         {
-            $str .= ' '.GetDeleteLink('/php/_submitdelete.php?'.$strQuery, '访问记录', 'Visitor Record', $bChinese);
-            $str .= ' '.GetInternalLink('/php/_submitoperation.php?'.$strQuery, '标注爬虫');
-            $str .= ' '.GetInternalLink('/php/_submitoperation.php?'.'malicious'.$strQuery, '标注恶意IP');
+            $str .= ' '.GetDeleteLink("/php/_submitdelete.php?$strQuery", '访问记录', 'Visitor Record', $bChinese);
+            $str .= ' '.GetInternalLink("/php/_submitoperation.php?$strQuery", '标注爬虫');
+            $str .= ' '.GetInternalLink("/php/_submitoperation.php?malicious{$strQuery}", '标注恶意IP');
         }
     }
     else
     {
     	$strTableName = $visitor_sql->GetTableName();
-    	$strQuery = ($strTableName == TABLE_VISITOR) ? false : 'type='.$strTableName;
+    	$strQuery = ($strTableName == TABLE_VISITOR) ? false : "type=$strTableName";
         $iTotal = $visitor_sql->CountData();
     	$ar[] = new TableColumnIP();
     }
@@ -97,6 +97,7 @@ function _echoVisitorParagraph($strIp, $strId, $visitor_sql, $contents_sql, $iSt
 function EchoAll($bChinese = true)
 {
     global $acct;
+	/** @var IpLookupAccount $acct */
     
     $strIp = $acct->GetQuery();
 	if (filter_valid_ip($strIp) == false)
@@ -120,7 +121,7 @@ function EchoAll($bChinese = true)
         $str = $acct->IpLookupString($strIp, $bChinese);
         $strId = GetIpId($strIp);
         $iPageCount = $visitor_sql->CountUniqueDst($strId);
-        if ($iPageCount > 0)		$str .= GetHtmlNewLine().($bChinese ? '保存的不同页面数量' : 'Saved unique page number').': '.strval($iPageCount);
+        if ($iPageCount > 0)    $str .= GetHtmlNewLine().($bChinese ? '保存的不同页面数量' : 'Saved unique page number').': '.strval($iPageCount);
     }
     else
     {
@@ -158,7 +159,7 @@ function GetMetaDescription($bChinese = true)
 	$str = GetTitle($bChinese);
     if ($bChinese)
     {
-    	$str .= '页面。用于观察IP攻击的异常状况，用户登录后会自动清除该IP之前的记录，具体的用户统计工作还是由Google Analytics和Google Adsense完成。';
+    	$str .= '页面。用于观察IP攻击的异常状况, 用户登录后会自动清除该IP之前的记录, 具体的用户统计工作还是由Google Analytics和Google Adsense完成。';
     }
     else
     {
@@ -167,5 +168,4 @@ function GetMetaDescription($bChinese = true)
     return CheckMetaDescription($str);
 }
 
-   	$acct = new IpLookupAccount('ip', true);	// Auth to  restrict robot ip lookup
-?>
+   	$acct = new IpLookupAccount('ip', true);	// Auth to restrict robot ip lookup
